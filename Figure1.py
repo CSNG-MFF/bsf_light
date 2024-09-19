@@ -3,7 +3,7 @@ from utils import reformat_error_data
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from matplotlib import gridspec
-import scipy
+from scipy.io import loadmat
 import numpy as np
 import pandas as pd
 from time import time
@@ -67,7 +67,7 @@ print(f"Computing took {comp_time} seconds.")
 
 #################################################### Plots
 
-matlab_data = scipy.io.loadmat('matlab/output3D_26_08_2024.mat')['out']
+matlab_data = loadmat('matlab/output3D_26_08_2024.mat')['out']
 matlab_data_xz = matlab_data[:,int(matlab_data.shape[1]/2),:]
 matlab_dx = 5
 matlab_x = np.arange(-80*matlab_dx,81*matlab_dx,matlab_dx)

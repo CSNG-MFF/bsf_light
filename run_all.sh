@@ -1,3 +1,5 @@
+#!/bin/bash
+
 python Figure1.py
 
 python gen_params_Fig_2_5_6.py

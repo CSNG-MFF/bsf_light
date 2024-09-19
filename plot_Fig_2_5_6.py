@@ -24,7 +24,7 @@ def get_params_from_file(file):
     params['nstepsphi'] = params['nstepsphi'][:-7]
     return type_cast_paramdict(params)
     
-def get_ressults_from_dir(dire):
+def get_results_from_dir(dire):
     files = []
     for dirpath, dirnames, filenames in os.walk('./results/'):
         for filename in filenames:
@@ -86,7 +86,7 @@ def plot_results(files, labelparams, legtitle=None, styles=['solid', 'dashed'], 
     axs[1].set_title('Depth = 300 µm', fontsize=fs, y=0.95)
     axs[2].set_title('Depth = 600 µm', fontsize=fs, y=0.95)
     return fig, axs
-files, paramdicts = get_ressults_from_dir('results/')
+files, paramdicts = get_results_from_dir('results/')
 params_df = pd.DataFrame(paramdicts)
 changing_params_df = params_df.loc[:,params_df.apply(pd.Series.nunique) != 1]
 params_df = params_df.set_index(list(changing_params_df.columns), append=True)
