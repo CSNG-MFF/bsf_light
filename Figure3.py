@@ -196,5 +196,5 @@ axs[-1].legend(fontsize=fs, frameon=False)
 plt.subplots_adjust(hspace=0.4)
 for ax, letter in zip(axs, ['a','b','c','d','e','f']):
     ax.text(-0.17, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
-fig.savefig('figures/document_tau_sampling.png', dpi=300)
+fig.savefig('figures/figure3.png', dpi=300)
 plt.close()

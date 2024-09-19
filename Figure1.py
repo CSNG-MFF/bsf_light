@@ -193,5 +193,5 @@ axs[-1].legend(fontsize=fs, bbox_to_anchor=(0.6, 0.42), frameon=False)
 for ax, letter in zip(axs, ['a','b',None,'c','d','e']):
     if letter != None:
         ax.text(-0.1, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
-fig.savefig('figures/comparison.png', dpi=300)
+fig.savefig('figures/figure1.png', dpi=300)
 plt.close()

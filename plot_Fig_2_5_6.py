@@ -39,8 +39,8 @@ def plot_results(files, labelparams, legtitle=None, styles=['solid', 'dashed'], 
     if styles == None or len(styles)!=len(files):
         styles = ['solid'] * len(files)
     ## import scraped data from Fig 5a (decay over depth)
-    data = pd.read_csv('../data_from_paper/2205_David_a_points.txt', names=['x','y'], delimiter=';')
-    data_err = pd.read_csv('../data_from_paper/2205_David_a_err.txt', names=['x','y'], delimiter=';')
+    data = pd.read_csv('data_from_paper/2205_David_a_points.txt', names=['x','y'], delimiter=';')
+    data_err = pd.read_csv('data_from_paper/2205_David_a_err.txt', names=['x','y'], delimiter=';')
     # sort errors and substract datapoint to adapt for plt.errorbar arguments
     yerrs = reformat_error_data(data, data_err)
     # use value at depth of 400 to normalize curves:
@@ -88,8 +88,8 @@ def plot_results(files, labelparams, legtitle=None, styles=['solid', 'dashed'], 
     return fig, axs
 files, paramdicts = get_results_from_dir('results/')
 params_df = pd.DataFrame(paramdicts)
-changing_params_df = params_df.loc[:,params_df.apply(pd.Series.nunique) != 1]
-params_df = params_df.set_index(list(changing_params_df.columns), append=True)
+index_order = ['rhoexpmin', 'n_rhosmpls', 'tau_exp_smpl', 'taumin', 'taumax', 'n_tausmpls', 'taustep', 'nstepstheta', 'nstepsphi']
+params_df = params_df.set_index(index_order, append=True)
 def get_idxs(rhoexpmin, n_rhosmpls, tau_exp_smpl, taumin, taumax, n_tausmpls, taustep, nanglesteps):
     return list(
         params_df.loc[:,rhoexpmin, n_rhosmpls, tau_exp_smpl, taumin, taumax, n_tausmpls, taustep, nanglesteps, nanglesteps].index
@@ -115,7 +115,7 @@ plt.tight_layout()
 for ax, letter in zip(ax, ['d','e','f']):
     ax.text(-0.17, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 fig.suptitle("Variation of upper integration limit", fontsize=fs, y=0.99)
-fig.savefig('figures/taumax_variation.png', dpi=300)
+fig.savefig('figures/figure2def.png', dpi=300)
 plt.show()
 
 idxs = get_idxs(
@@ -138,7 +138,7 @@ plt.tight_layout()
 for ax, letter in zip(ax, ['a','b','c']):
     ax.text(-0.17, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 fig.suptitle("Variation of lower integration limit", fontsize=fs, y=0.99)
-fig.savefig('figures/taumin_variation.png', dpi=300)
+fig.savefig('figures/figure2abc.png', dpi=300)
 plt.show()
 idxs = get_idxs(
     rhoexpmin=1,
@@ -159,7 +159,7 @@ fig, ax = plot_results(
 for ax, letter in zip(ax, ['a','b','c']):
     ax.text(-0.17, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 plt.tight_layout()
-fig.savefig('figures/angles_variation.png', dpi=300)
+fig.savefig('figures/figure6.png', dpi=300)
 idxs = get_idxs(
     rhoexpmin=1,
     n_rhosmpls=[20,50],
@@ -179,7 +179,7 @@ fig, ax = plot_results(
 plt.tight_layout()
 for ax, letter in zip(ax, ['d','e','f']):
     ax.text(-0.17, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
-fig.savefig('figures/n_rhosmpls_variation.png', dpi=300)
+fig.savefig('figures/figure5def.png', dpi=300)
 idxs = get_idxs(
     rhoexpmin=[0.01, 1],
     n_rhosmpls=20,
@@ -199,4 +199,4 @@ fig, ax = plot_results(
 plt.tight_layout()
 for ax, letter in zip(ax, ['a','b','c']):
     ax.text(-0.17, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
-fig.savefig('figures/rhomin_exp_sampling_variation.png', dpi=300)
+fig.savefig('figures/figure5abc.png', dpi=300)
