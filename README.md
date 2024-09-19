@@ -22,7 +22,11 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Use code for modeling light propagation in cortical tissue
 
-See example in Figure1.py.
+* 'BSF.py' contains main model implementation. 
+
+* 'utils.py' contains utilitly functions
+
+* See example on how to use code for light simulations in Figure1.py.
 
 
 ## References
