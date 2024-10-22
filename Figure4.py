@@ -51,6 +51,10 @@ params = {
     # angular convolution
     "nstepstheta": 24,  # ang conv steps
     "nstepsphi"  : 24,
+
+    # disk convolution
+    "dxy_direct_disk"   : 5,
+    "dxy_scattered_disk": 5,
 }
 results = dict()
 calc_types = ['table1_Lutomirski', 'table1_vandeHulst', 'eq4']
@@ -91,21 +95,18 @@ axs[0].errorbar(data.x*1000,
 
 for ct, label, c in zip(calc_types, labels, colors):
     this_model = results[ct]['final']['combined']
-    shape = this_model.shape
-    y_cnt = int(shape[1]/2)
     z_300 = int(300/params['dz'])
     z_600 = int(600/params['dz'])
-    # normalize to data point at z=400 um depth
-    this_model = this_model/this_model[y_cnt,y_cnt,int(400/params['dz'])]*norm_z400
+
     this_model[this_model==0] = 1e-30
     
-    x = results[ct]['final']['x']
+    x = results[ct]['final']['rho']
     z = results[ct]['final']['z']
-    axs[0].plot(z[y_cnt,y_cnt, :], this_model[y_cnt, y_cnt, :],
+    axs[0].plot(z[0, :], this_model[0, :],
                 ls='solid', label=label, color=c)
-    axs[1].plot(x[:,y_cnt, 0], this_model[:, y_cnt, z_300]/this_model[y_cnt, y_cnt, z_300],
+    axs[1].plot(x[:, 0], this_model[:, z_300]/this_model[0, z_300],
                 ls='solid', label=label, color=c)
-    axs[2].plot(x[:,y_cnt, 0], this_model[:, y_cnt, z_600]/this_model[y_cnt, y_cnt, z_600],
+    axs[2].plot(x[:, 0], this_model[:, z_600]/this_model[0, z_600],
                 ls='solid', label=label, color=c)
     
 axs[0].set_xlim(0,700)
@@ -133,7 +134,7 @@ for ax in axs:
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.tick_params(axis='both', which='major', labelsize=fs)
-axs[-1].legend(fontsize=fs, bbox_to_anchor=(0.5, 0.42), frameon=False)
+axs[-1].legend(fontsize=fs, bbox_to_anchor=(1., 0.42), frameon=False)
 
 # insert letters:
 fig.text(0.073, 0.95, 'a', fontsize=10, fontweight='bold', color='black')

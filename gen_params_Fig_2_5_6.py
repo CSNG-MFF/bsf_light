@@ -48,7 +48,12 @@ params = {
     # angular convolution
     "nstepstheta": 24,  # ang conv steps
     "nstepsphi"  : 24,
+
+    # disk convolution
+    "dxy_direct_disk"   : 5,
+    "dxy_scattered_disk": 5,
 }
+
 
 paramsets = []
 paramsets.append(params)

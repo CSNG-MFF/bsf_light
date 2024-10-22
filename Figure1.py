@@ -1,6 +1,8 @@
-from BSF import calc_I_fiber, I_direct_cone
-from utils import reformat_error_data
+from BSF import calc_I_fiber
+from utils import reformat_error_data, mirror_x_axis
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
+import matplotlib.font_manager as fm
 from matplotlib.colors import LogNorm
 from matplotlib import gridspec
 from scipy.io import loadmat
@@ -56,6 +58,10 @@ params = {
     # angular convolution
     "nstepstheta": 24,  # ang conv steps
     "nstepsphi"  : 24,
+
+    # disk convolution
+    "dxy_direct_disk"   : 5,
+    "dxy_scattered_disk": 5,
 }
 
 #################################################### Calculation
@@ -75,13 +81,11 @@ matlab_z = np.arange(0,140*5,5)
 matlab_xx, matlab_zz = np.meshgrid(matlab_x, matlab_z, indexing='ij')
 
 this_model = results['final']['combined']
-this_model = this_model/this_model.max()
+#this_model = this_model/this_model.max()
 this_model[this_model==0] = 1e-30
-shape = this_model.shape
-y_cnt = int(shape[1]/2)
 z_300 = int(300/params['dz'])
 z_600 = int(600/params['dz'])
-x = results['final']['x']
+x = results['final']['rho']
 z = results['final']['z']
 
 ## import scraped data from Fig 5a (decay over depth)
@@ -95,8 +99,6 @@ data_300 = pd.read_csv('data_from_paper/2205_David_b_points_blue.txt', names=['x
 curve_600 = np.load('data_from_paper/BSF_model_radial_curve_600.npy')
 curve_300 = np.load('data_from_paper/BSF_model_radial_curve_300.npy')
 
-# use data point at x=300um to normalize
-norm = data.y[2]/100 / this_model[y_cnt, y_cnt, int(300/params['dz'])]
 
 fs = 8
 A4_w, A4_h = 8.27, 11.69 # inch
@@ -117,10 +119,26 @@ cmap = 'Blues'
 axs[0].set_title('Original (matlab app)', fontsize=fs)
 mappable = axs[0].pcolormesh(matlab_xx, matlab_zz, matlab_data_xz, norm=LogNorm(*logminmax), shading='nearest', cmap=cmap)
 axs[1].set_title('Replication', fontsize=fs)
-mappable = axs[1].pcolormesh(x[:,y_cnt,:], z[:,y_cnt,:], this_model[:,y_cnt,:]*0.07, norm=LogNorm(*logminmax), shading='nearest', cmap=cmap)
+x_mirrored = mirror_x_axis(x, make_neg=True)
+z_mirrored = mirror_x_axis(z, make_neg=False)
+this_model_mirrored = mirror_x_axis(this_model, make_neg=False)
+mappable = axs[1].pcolormesh(x_mirrored, z_mirrored, this_model_mirrored, norm=LogNorm(*logminmax), shading='nearest', cmap=cmap)
 for ax in axs[0:2]:
     ax.set_xlim(-400,400)
     ax.set_ylim(0,700)
+    # Create a scale bar
+    scalebar = AnchoredSizeBar(ax.transData,
+                               100,                # Length of the scale bar in data units
+                               '100 µm',           # Label for the scale bar
+                               'lower right',      # Location of the scale bar
+                               pad=0.5,
+                               color='black',      # Color of the scale bar
+                               frameon=False,
+                               size_vertical=2,    # Thickness of the scale bar
+                               fontproperties=fm.FontProperties(size=fs)
+    )
+    # Add the scale bar to the axis
+    ax.add_artist(scalebar)
 cbar = plt.colorbar(mappable, cax=axs[2])
 cbar.set_label('Normalized intensity', fontsize=fs)
 
@@ -143,11 +161,10 @@ axs[3].errorbar(data.x*1000,
             c='black', 
             linestyle='',
             capsize=5)
-axs[3].plot(z[y_cnt,y_cnt, :], this_model[y_cnt, y_cnt, :]*norm,
+axs[3].plot(z[0, :], this_model[0, :],#*norm,
             ls='solid', color='orange', label='replication')
 axs[3].plot(matlab_z, matlab_data_xz[int(matlab_data.shape[0]/2), :], 
             ls='solid', color='blue', label='original model')
-#axs[3].plot(z[y_cnt,y_cnt, :], I_direct_cone(z=z[y_cnt,y_cnt, :], rho=0, params=params), color='gray', ls='dashed')
 axs[3].set_xlim(0,700)
 axs[3].set_ylim(0,0.3)
 axs[3].set_ylabel('Normalized Intensity', fontsize=fs)
@@ -158,7 +175,7 @@ axs[3].set_xlabel('Depth [µm]', fontsize=fs)
 axs[4].set_title('depth = 300 µm', fontsize=fs)
 axs[4].plot(data_300.x*1000,data_300.y/100, label='experiment', 
             marker='x',c='black', linestyle='')
-axs[4].plot(x[:,y_cnt, 0], this_model[:, y_cnt, z_300]/this_model[y_cnt, y_cnt, z_300],
+axs[4].plot(x[:, 0], this_model[:, z_300]/this_model[0, z_300],
             ls='solid', color='orange', label='replication')
 axs[4].plot(matlab_x, matlab_data_xz[:, int(300/5)]/matlab_data_xz[int(matlab_data.shape[1]/2), int(300/5)],
             ls='solid', color='blue', label='original model')
@@ -169,7 +186,7 @@ axs[4].plot(curve_300[:,0]*1000, curve_300[:,1]/100,
 axs[5].set_title('depth = 600 µm', fontsize=fs)
 axs[5].plot(data_600.x*1000,data_600.y/100, label='experiment', 
             marker='x',c='black', linestyle='')
-axs[5].plot(x[:,y_cnt, 0], this_model[:, y_cnt, z_600]/this_model[y_cnt, y_cnt, z_600],
+axs[5].plot(x[:, 0], this_model[:, z_600]/this_model[0, z_600],
             ls='solid', color='orange', label='replication')
 axs[5].plot(matlab_x, matlab_data_xz[:, int(600/5)]/matlab_data_xz[int(matlab_data.shape[1]/2), int(600/5)],
             ls='solid', color='blue', label='original\n(matlab app)')

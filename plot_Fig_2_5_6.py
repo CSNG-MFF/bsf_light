@@ -43,8 +43,6 @@ def plot_results(files, labelparams, legtitle=None, styles=['solid', 'dashed'], 
     data_err = pd.read_csv('data_from_paper/2205_David_a_err.txt', names=['x','y'], delimiter=';')
     # sort errors and substract datapoint to adapt for plt.errorbar arguments
     yerrs = reformat_error_data(data, data_err)
-    # use value at depth of 400 to normalize curves:
-    norm_z400 = data.iloc[3]['y']/100
     
     A4_w, A4_h = 8.27, 11.69 # inch
     fig = plt.figure(figsize=(A4_w*0.8, A4_h*0.2))
@@ -62,15 +60,13 @@ def plot_results(files, labelparams, legtitle=None, styles=['solid', 'dashed'], 
         else:
             label = labels[i]
         res = np.load(file, allow_pickle=True)
-        x = res['final']['x']
-        y = res['final']['y']
+        x = res['final']['rho']
         z = res['final']['z']
         I = res['final']['combined']
-        xcnt, ycnt = (np.array(x.shape)[:2]/2).astype(int)
-        #axs[0].plot(z[xcnt, ycnt,:], I[xcnt, ycnt,:]/I[xcnt, ycnt, int(400/params['dz'])]*norm_z400, label=label, ls=ls)
-        axs[0].plot(z[xcnt, ycnt,:], I[xcnt, ycnt,:], label=label, ls=ls)
-        axs[1].plot(x[:, ycnt,int(300/params['dz'])], I[:, ycnt,int(300/params['dz'])]/I[xcnt, ycnt,int(300/params['dz'])], label=label, ls=ls)
-        axs[2].plot(x[:, ycnt,int(600/params['dz'])], I[:, ycnt,int(600/params['dz'])]/I[xcnt, ycnt,int(600/params['dz'])], label=label, ls=ls)
+        xcnt = 0
+        axs[0].plot(z[xcnt, :], I[xcnt, :], label=label, ls=ls)
+        axs[1].plot(x[:,int(300/params['dz'])], I[:, int(300/params['dz'])]/I[xcnt, int(300/params['dz'])], label=label, ls=ls)
+        axs[2].plot(x[:,int(600/params['dz'])], I[:, int(600/params['dz'])]/I[xcnt, int(600/params['dz'])], label=label, ls=ls)
         
     axs[0].set_xlabel('Depth [µm]')
     axs[0].set_ylabel('Transmission (not normalized)')

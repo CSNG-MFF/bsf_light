@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from utils import rotate_cyl_coords_2angles_return_rho_z
 from utils import log_smplng, calc_pencil_rho_z_max
-from utils import Interpolator, disk_conv_nproll, calc_dependent_params
+from utils import Interpolator, disk_conv_nproll, calc_dependent_params, disk_conv_numpy
 
 def I_direct_cone(z, rho, params):
     """ 
@@ -130,11 +130,12 @@ def ang_conv(rho, z, func_rho_z, params):
             ang_conv += func_rho_z(np.abs(rho_r), z_r) * np.sin(theta)\
                         * dtheta * dphi * (rho*rho + z*z)
     
-    norm = (1 - np.cos(params['theta_div'])) * 2 * np.pi * (rho*rho + z*z)
+    #norm = (1 - np.cos(params['theta_div'])) * 2 * np.pi * (rho*rho + z*z)
+    norm = 2 * np.pi * (rho*rho + z*z)
     return ang_conv/norm
 
 
-def calc_I_fiber(params):
+def calc_I_fiber_old(params):
     params = calc_dependent_params(params)
     # Calculate pencil beam of scattered
     ## Define space
@@ -186,7 +187,7 @@ def calc_I_fiber(params):
 
     # create interpolator for pencil_beam:
     interpolator_pencil_beam = Interpolator(
-        rho3_pen[:,:,0], z3_pen[:,:,0], pencil_beam_scattered
+        rho3_pen[:,:,0], z3_pen[:,:,0], pencil_beam_scattered, fill_value=0
     )
 
     # Calculate cones of light
@@ -242,5 +243,104 @@ def calc_I_fiber(params):
         pencil = dict(rho=rho3_pen[:,:,0], z=z3_pen[:,:,0], scattered=pencil_beam_scattered),
         cone = dict(rho=rho2_cone, z=z2_cone, scattered=cone_scattered, direct=cone_direct),
         final = dict(x=xxx, y=yyy, z=zzz, combined=disk_conv)
+    )
+    return results
+
+def calc_I_fiber(params):
+    params = calc_dependent_params(params)
+    # Calculate pencil beam of scattered
+    ## Define space
+    rho_max_pen, z_max_pen = calc_pencil_rho_z_max(
+        params['theta_div'],
+        params['xymax'],
+        params['zmax']
+    )
+    
+    if params['rho_exp_smpl']:
+        # use exp.-sampling with 0 at beginning for rho
+        rhos = np.insert(log_smplng(
+            min_=params['rhoexpmin'], 
+            max_=rho_max_pen, 
+            n_smpls=params['n_rhosmpls']-1
+        ), 0, 0)
+    else:
+        # use uniform sampling
+        rhos = np.arange(
+            0, 
+            rho_max_pen+params['rhostep'],
+            params['rhostep']
+        )
+    zs = np.arange(1, z_max_pen+params['dz'], params['dz'])
+
+    ## Define multi-path time
+    if params['tau_exp_smpl']:
+        taus = log_smplng(
+            min_=params['taumin'],
+            max_=params['taumax'],
+            n_smpls=params['n_tausmpls']
+        )
+    else:
+        taus = np.arange(
+            params['taumin'],
+            params['taumax']+params['taustep'],
+            params['taustep']
+        )
+
+    rho3_pen, z3_pen, tau3_pen = np.meshgrid(rhos, zs, taus, indexing='ij')
+    pencil_beam_scattered = pencil_scattered_time_integrated(
+        z3_pen, rho3_pen, tau3_pen, 
+        g=params['g'], 
+        mu_s=params['mu_s'], 
+        mu_a=params['mu_a'], 
+        c=params['c'], 
+        G_version=params['mu_tau']
+    )   
+
+    # create interpolator for pencil_beam:
+    interpolator_pencil_beam = Interpolator(
+        rho3_pen[:,:,0], z3_pen[:,:,0], pencil_beam_scattered, fill_value=0
+    )
+
+    # Calculate scattered light
+    ## define space
+    rhos = np.arange(
+        0, params['xymax']+params['dxy'],params['dxy']
+    )
+    zs = np.arange(
+        1, params['zmax']+params['dz'], params['dz'])
+
+    rho2_cone, z2_cone = np.meshgrid(rhos, zs, indexing='ij')
+
+    # cone
+    cone_scattered = ang_conv(
+        rho2_cone, z2_cone, interpolator_pencil_beam.calc, 
+        params = params
+    )
+    # create Interpolator for cone_scattered
+    interp_cone_scattered = Interpolator(rho2_cone, z2_cone, cone_scattered)
+    # disk
+    disk_scattered = disk_conv_numpy(
+        rho=rho2_cone, 
+        z=z2_cone, 
+        I_rho_z=interp_cone_scattered.calc, 
+        opt_radius=params['opt_radius'], 
+        dxy=params['dxy_scattered_disk']
+    )
+    # Calculate direct light
+    def I_direct_cone_fixed_params(rho, z):
+        return I_direct_cone(z, rho, params)
+    disk_direct = disk_conv_numpy(
+        rho=rho2_cone, 
+        z=z2_cone, 
+        I_rho_z=I_direct_cone_fixed_params, 
+        opt_radius=params['opt_radius'], 
+        dxy=params['dxy_direct_disk']
+    )
+    
+    # results
+    results = dict(
+        pencil = dict(rho=rho3_pen[:,:,0], z=z3_pen[:,:,0], scattered=pencil_beam_scattered),
+        cone = dict(rho=rho2_cone, z=z2_cone, scattered=cone_scattered),
+        final = dict(rho=rho2_cone, z=z2_cone, scattered=disk_scattered, direct=disk_direct, combined=disk_direct+disk_scattered)
     )
     return results

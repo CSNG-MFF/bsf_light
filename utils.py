@@ -73,15 +73,36 @@ def disk_conv_nproll(intensity, opt_radius: float, dxy: float):
 
     # disk conv
     res = np.zeros(np.shape(intensity))
-    cnt = 0
     for x_ishift, y_ishift in tqdm(list(zip(ixx_disk_from_center_flat, iyy_disk_from_center_flat))):
         res += np.roll(
             np.roll(
                 intensity, shift=x_ishift, axis=0
             ), shift=y_ishift, axis=1
-        )
-        cnt += 1
-    return res/cnt
+        ) * dxy * dxy
+    return res
+
+def disk_conv_numpy(rho, z, I_rho_z, opt_radius: float, dxy: float):
+    """
+    Use disk convolution to generalize from a light cone existing an 
+    infinitesimal point to the light emitted from a circular surface.
+    """
+    x_shift = np.arange(-1 * opt_radius, opt_radius + dxy, dxy)
+    y_shift = np.arange(0, opt_radius + dxy, dxy)
+    xx_shift, yy_shift = np.meshgrid(x_shift, y_shift, indexing='ij')
+    
+    # Apply disk constraint to the shifts
+    within_disk = (xx_shift ** 2 + yy_shift ** 2) <= opt_radius ** 2
+    xx_shift = xx_shift[within_disk].flatten()
+    yy_shift = yy_shift[within_disk].flatten()
+
+    # Calculate shifted coordinates
+    rho_shifted = np.sqrt((rho[:, :, np.newaxis] - xx_shift) ** 2 + yy_shift ** 2)
+    
+    z_shifted = z[:, :, np.newaxis] + np.zeros(xx_shift.shape)
+    # Interpolate over the shifted coordinates in a vectorized manner
+    I_res = np.sum(I_rho_z(rho_shifted, z_shifted) * 2 * dxy**2, axis=2)
+
+    return I_res
 
 
 def calc_pencil_rho_z_max(theta, xmax, zmax):
@@ -169,3 +190,26 @@ def reformat_error_data(data, data_err):
     d_err = round_x(data_err)
     errs = reformat_yerr(y_vals=data.y, y_errs=d_err.y)
     return np.abs(np.array(errs).reshape(int(len(errs)/2),2).T)
+
+def mirror_x_axis(arr, make_neg=False):
+    """
+    Mirrors a 2D array along the x-axis (the first dimension), ignoring the first row (x = 0).
+    
+    Parameters:
+    arr (numpy.ndarray): The input 2D array of shape (a, b), where a is the number of rows.
+    
+    Returns:
+    numpy.ndarray: The mirrored array of shape (2a-1, b).
+    """
+    # Get the rows excluding the first row (x = 0)
+    arr_positive_x = arr[1:, :]  # Shape (a-1, b)
+    
+    # Mirror the array along the x-axis by flipping along the first axis
+    arr_mirrored = np.flip(arr_positive_x, axis=0)  # Shape (a-1, b)
+    if make_neg:
+        # Concatenate the original array with the mirrored array
+        result = np.vstack((-1*arr_mirrored, arr))  # Shape (2a-1, b)
+    else:
+        # Concatenate the original array with the mirrored array
+        result = np.vstack((arr_mirrored, arr))  # Shape (2a-1, b)
+    return result

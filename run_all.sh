@@ -8,6 +8,4 @@ snakemake
 
 python plot_Fig_2_5_6.py
 
-python Figure3.py
-
 python Figure4.py
