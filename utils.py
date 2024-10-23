@@ -126,36 +126,39 @@ def calc_dependent_params(params):
     return params
 
 def rotate_cyl_coords_2angles_return_rho_z(rho, phi, z, alpha, beta):
-    """ 
+    """
     Takes cylindrical coordinates (rho, phi, z) of the coord-
     system in which the Riemann sum representing the angular
-    convolution takes place and returns cylindrical coords 
-    (rho_, phi_, z_) in which the light beam is oriented 
+    convolution takes place and returns cylindrical coords
+    (rho_, z_) in which the light beam is oriented
     along the z_-axis.
-    The rotation is defined in following way:
-    - rho, phi, z are transformed into cartesian coords x, y, z
-    - x, y, z are rotated about the z-axis by angle alpha to get to xtmp, ytmp, ztmp
-    - xtmp, ytmp, ztmp are rotated along the ytmp-axis to get to x_, y_, z_
-    - x_, y_, z_ are translated into rho_, phi_, z_
     """
+    # Ensure input shapes are compatible
+    rho = np.asarray(rho)
+    z = np.asarray(z)
+
+    # Convert cylindrical to Cartesian coordinates
     x = rho * np.cos(phi)
     y = rho * np.sin(phi)
-    
-    # rotate (x,y,z) by alpha around z-axis, get (xtmp, ytmp, ztmp) 
-    # and rotate them by beta around ytmp axis to get (x_, y_, z_)
-    # beta is defined in negative direction
+
+    # Rotate (x,y,z) by alpha around z-axis
     cosb = np.cos(beta)
     cosa = np.cos(alpha)
     sinb = np.sin(beta)
     sina = np.sin(alpha)
-    beta *= (-1)
+
+    # Apply rotation
     x_ = cosa * cosb * x + sina * cosb * y + sinb * z
     y_ = -1 * sina * x + cosa * y
     z_ = -1 * cosa * sinb * x - sina * sinb * y + cosb * z
-    
-    rho_ = np.sqrt(x_*x_ + y_*y_)
-    #phi_ = np.arccos(x_ / rho_)
 
+    # Convert back to cylindrical coordinates
+    rho_ = np.sqrt(x_**2 + y_**2)
+
+    # Handle phi_ calculation properly
+    #phi_ = np.arctan2(y_, x_)  # Use arctan2 for correct quadrant handling
+
+    # Return both rho_ and z_ (and optionally phi_)
     #return rho_, phi_, z_
     return rho_, z_
 
