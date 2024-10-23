@@ -130,7 +130,6 @@ def ang_conv(rho, z, func_rho_z, params):
             ang_conv += func_rho_z(np.abs(rho_r), z_r) * np.sin(theta)\
                         * dtheta * dphi * (rho*rho + z*z)
     
-    #norm = (1 - np.cos(params['theta_div'])) * 2 * np.pi * (rho*rho + z*z)
     norm = 2 * np.pi * (rho*rho + z*z)
     return ang_conv/norm
 
