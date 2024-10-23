@@ -110,29 +110,36 @@ def ang_conv(rho, z, func_rho_z, params):
     light cone exiting infinitesimal point in emitter surface.
 
     Numerical convolution over angles theta
-    and phi of function ksc_tau_integrated
+    and phi of function depending on rho and z.
     """
     # uniform sampling
     thetas = np.linspace(0, params['theta_div'], params['nstepstheta'])
     dtheta = np.diff(thetas)[0]
     phis = np.arange(0, 2*np.pi, 2*np.pi/params['nstepsphi'])
     dphi = np.diff(phis)[0]
-    shape = np.shape(rho)
-    ang_conv = np.zeros(shape)
-    
-    for theta in tqdm(thetas):
-        for phi in phis:
-            # rotate the coordinates, rescale their value such that after 
-            # rounding it corresponds to some index in intensity_prof
-            rho_r, z_r = rotate_cyl_coords_2angles_return_rho_z(
-                rho=rho, phi=0, z=z, alpha=phi, beta=theta)
-            # get intensity from interpolation of pencil beam:
-            ang_conv += func_rho_z(np.abs(rho_r), z_r) * np.sin(theta)\
-                        * dtheta * dphi * (rho*rho + z*z)
+    thetas, phis = np.meshgrid(thetas, phis, indexing='ij')
+    thetas = thetas.flatten()[np.newaxis,np.newaxis,:]
+    phis = phis.flatten()[np.newaxis,np.newaxis,:]
+
+    rho_ = rho[:,:,np.newaxis]
+    z_ = z[:,:,np.newaxis]
+
+    # rotate the coordinates, rescale their value such that after 
+    # rounding it corresponds to some index in intensity_prof
+    rho_r, z_r = rotate_cyl_coords_2angles_return_rho_z(
+        rho=rho_, phi=0, z=z_, 
+        alpha=phis, 
+        beta=thetas
+    )
+    # get intensity from interpolation of pencil beam:
+    ang_conv = np.sum(
+        func_rho_z(np.abs(rho_r), z_r)\
+        * np.sin(thetas) * dtheta * dphi * (rho_*rho_ + z_*z_),
+        axis=2
+    )
     
     norm = 2 * np.pi * (rho*rho + z*z)
     return ang_conv/norm
-
 
 def calc_I_fiber_old(params):
     params = calc_dependent_params(params)
