@@ -21,7 +21,8 @@ def get_params_from_file(file):
     key_val_pairs = [var.split('~') for var in varis]
     for key, val in key_val_pairs:
         params[key] = val
-    params['nstepsphi'] = params['nstepsphi'][:-7]
+    # remove '.pickle' from last param value
+    params['dxy_scattered_disk'] = params['dxy_scattered_disk'][:-7]
     return type_cast_paramdict(params)
     
 def get_results_from_dir(dire):

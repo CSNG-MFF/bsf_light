@@ -50,7 +50,7 @@ params = {
     "nstepsphi"  : 24,
 
     # disk convolution
-    "dxy_direct_disk"   : 5,
+    "dxy_direct_disk"   : 0.5,
     "dxy_scattered_disk": 5,
 }
 
