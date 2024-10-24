@@ -85,6 +85,10 @@ def disk_conv_numpy(rho, z, I_rho_z, opt_radius: float, dxy: float):
     """
     Use disk convolution to generalize from a light cone existing an 
     infinitesimal point to the light emitted from a circular surface.
+
+    Warning: Makes use of symmetry along y-axis. Instead of calculating
+    contribution from all 4 x-y-quadrants, calculates only quadrants
+    with positive y and multiplies by 2.
     """
     x_shift = np.arange(-1 * opt_radius, opt_radius + dxy, dxy)
     y_shift = np.arange(0, opt_radius + dxy, dxy)
