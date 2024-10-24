@@ -45,42 +45,6 @@ def type_cast_paramdict(params):
 
     return params
 
-def disk_conv_nproll(intensity, opt_radius: float, dxy: float):
-    """
-    Use disk convolution to get full 3D light profile from a light cone 
-    exiting infinitesimal point mapped to a circular emitter surface.
-    """
-    
-    # set all np.nan to zero
-    intensity[np.isnan(intensity)] = 0
-    # generate sampling points for light in disk
-    nxy = 2 * opt_radius / dxy + 1
-
-    assert nxy%1==0, 'choose optical radius to be multiple of dxy'
-    nxy = int(nxy)
-    ix_disk_from_center = np.linspace(-opt_radius/dxy,opt_radius/dxy,nxy)
-    iy_disk_from_center = np.linspace(-opt_radius/dxy,opt_radius/dxy,nxy)
-    ixx_disk_from_center, iyy_disk_from_center = np.meshgrid(ix_disk_from_center, iy_disk_from_center, indexing='ij')
-    within_disk = ((ixx_disk_from_center*dxy)**2 + (iyy_disk_from_center*dxy)**2) <= opt_radius**2
-    ixx_disk_from_center_flat = ixx_disk_from_center[within_disk].flatten()
-    iyy_disk_from_center_flat = iyy_disk_from_center[within_disk].flatten()
-    assert np.sum(ixx_disk_from_center_flat % 1) == 0,\
-    'opt radius is not integer multiple of dx or nx is not chosen to return integer steps'
-    assert np.sum(iyy_disk_from_center_flat % 1) == 0,\
-    'opt radius is not integer multiple of dy or ny is not chosen to return integer steps'
-    ixx_disk_from_center_flat = ixx_disk_from_center_flat.astype(int)
-    iyy_disk_from_center_flat = iyy_disk_from_center_flat.astype(int)
-
-    # disk conv
-    res = np.zeros(np.shape(intensity))
-    for x_ishift, y_ishift in tqdm(list(zip(ixx_disk_from_center_flat, iyy_disk_from_center_flat))):
-        res += np.roll(
-            np.roll(
-                intensity, shift=x_ishift, axis=0
-            ), shift=y_ishift, axis=1
-        ) * dxy * dxy
-    return res
-
 def disk_conv_numpy(rho, z, I_rho_z, opt_radius: float, dxy: float):
     """
     Use disk convolution to generalize from a light cone existing an 
