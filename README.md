@@ -5,7 +5,6 @@
 * python 3.x
 * numpy
 * pandas
-* snakemake >5.13
 * matplotlib
 * scipy
 * tqdm
@@ -14,19 +13,20 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Conda installation:
 
-'''conda create -n BSF -c conda-forge -c bioconda numpy pandas snakemake">=5.13" matplotlib scipy tqdm'''
+'''conda create -n BSF -c conda-forge numpy pandas matplotlib scipy tqdm'''
 
 ## Reproduce figures
 
 '''bash run_all.sh'''
+'''bash run_all_plots.sh'''
 
 ## Use code for modeling light propagation in cortical tissue
 
 * 'BSF.py' contains main model implementation. 
 
-* 'utils.py' contains utilitly functions
+* 'utils.py', 'load_original.py', 'load_save_utils.py' contain utilitly functions
 
-* See example on how to use code for light simulations in Figure1.py.
+* To run simulation with custom parameters, adapt parametrization in params/default.yml and save as under new file, e.g., params/custom.yml and run: '''python run.py params/custom.yml results/custom.pickle'''
 
 
 ## References
