@@ -15,7 +15,7 @@ opt_radius: 100  # fiber radius in um
 #                     volume to avoid artifacts from disk convolution.
 #                     Check docstring of disk_conv_nproll in utils.py for
 #                     more information.
-'xymax':  700 
+'xymax':  400 
 'dxy':   5 
 'zmax':   700 
 'dz':    5 
