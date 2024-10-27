@@ -146,22 +146,6 @@ class Interpolator:
         )
         return flat_interp_data.reshape(rr.shape) 
     
-def round_x(data):
-    d = data.copy()
-    d.x/=0.05
-    d.x = d.x.round(decimals=0)
-    d.x *= 0.05
-    return d.sort_values(by=['x','y'])
-
-def reformat_yerr(y_vals, y_errs):
-    return [y - y_vals[int(idx/2)] for idx, y in enumerate(y_errs)]
-
-def reformat_error_data(data, data_err):
-    """Use to sort errors from experimental depth data"""
-    d_err = round_x(data_err)
-    errs = reformat_yerr(y_vals=data.y, y_errs=d_err.y)
-    return np.abs(np.array(errs).reshape(int(len(errs)/2),2).T)
-
 def mirror_x_axis(arr, make_neg=False):
     """
     Mirrors a 2D array along the x-axis (the first dimension), ignoring the first row (x = 0).

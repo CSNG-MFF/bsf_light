@@ -241,7 +241,12 @@ def calc_I_fiber(params):
     )
     return results
 
-def calc_I_fiber_reproduce_error(params, fix_pencil_rho_z=False, BSF_error=False):
+def calc_I_fiber_reproduce_error(
+        params, 
+        fix_pencil_rho_z, 
+        ang_conv_fill_nan,
+        decrease_disk_conv_volume_radially
+        ):
 
     params = calc_dependent_params(params)
     # Calculate pencil beam of scattered
@@ -296,7 +301,7 @@ def calc_I_fiber_reproduce_error(params, fix_pencil_rho_z=False, BSF_error=False
     )   
 
     # create interpolator for pencil_beam:
-    if BSF_error == True:
+    if ang_conv_fill_nan == True:
         interpolator_pencil_beam = Interpolator(
             rho3_pen[:,:,0], z3_pen[:,:,0], pencil_beam_scattered, fill_value=np.nan
         )
@@ -320,10 +325,16 @@ def calc_I_fiber_reproduce_error(params, fix_pencil_rho_z=False, BSF_error=False
         rho2_cone, z2_cone, interpolator_pencil_beam.calc, 
         params = params
     )
-    if BSF_error == True:
+    if ang_conv_fill_nan == True:
         cone_scattered[np.isnan(cone_scattered)] = 0
     # create Interpolator for cone_scattered
-    interp_cone_scattered = Interpolator(rho2_cone, z2_cone, cone_scattered)
+    if decrease_disk_conv_volume_radially:
+        rho_idx_rm = int(decrease_disk_conv_volume_radially / params['dxy'])
+        interp_cone_scattered = Interpolator(
+            rho2_cone[:-rho_idx_rm,:], z2_cone[:-rho_idx_rm,:], cone_scattered[:-rho_idx_rm,:], fill_value=0
+        )
+    else:
+        interp_cone_scattered = Interpolator(rho2_cone, z2_cone, cone_scattered)
     # disk
     disk_scattered = disk_conv_numpy(
         rho=rho2_cone, 
@@ -332,6 +343,8 @@ def calc_I_fiber_reproduce_error(params, fix_pencil_rho_z=False, BSF_error=False
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_scattered_disk']
     )
+    if decrease_disk_conv_volume_radially == True:
+        disk_scattered[np.isnan(disk_scattered)] = 0
     # Calculate direct light
     def I_direct_cone_fixed_params(rho, z):
         return I_direct_cone(z, rho, params)
