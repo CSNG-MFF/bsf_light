@@ -8,5 +8,5 @@ python run.py 'params/default_Lutomirski.yml' 'results/default_Lutomirski.pickle
 
 python run.py 'params/default_vandeHulst.yml' 'results/default_vandeHulst.pickle'
 
-python run.py 'params/error.yml' 'results/error.pickle'
+python run_error.py 'params/error.yml' 'results/error.pickle'
 
