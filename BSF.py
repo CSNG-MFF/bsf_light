@@ -1,6 +1,5 @@
 from scipy.special import gamma
 import numpy as np
-from tqdm import tqdm
 from utils import rotate_cyl_coords_2angles_return_rho_z
 from utils import log_smplng, calc_pencil_rho_z_max
 from utils import Interpolator, calc_dependent_params, disk_conv_numpy

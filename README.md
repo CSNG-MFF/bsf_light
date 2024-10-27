@@ -7,13 +7,13 @@
 * pandas
 * matplotlib
 * scipy
-* tqdm
+* pyyaml
 
 Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Conda installation:
 
-'''conda create -n BSF -c conda-forge numpy pandas matplotlib scipy tqdm'''
+'''conda create -n BSF -c conda-forge -c anaconda numpy pandas matplotlib scipy pyyaml'''
 
 ## Reproduce figures
 

@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.interpolate import griddata
-from tqdm import tqdm
 
 def conv_bool(inp):
     if (inp == 'True') or (inp == True):
