@@ -17,8 +17,9 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Reproduce figures
 
-'''bash run_all.sh'''
-'''bash run_all_plots.sh'''
+* On computer with lower RAM specification, e.g., laptop: '''bash run_all.sh'''
+* On computer with high RAM, e.g., cluster: '''bash run_all_cluster.sh'''
+* On any computer: '''bash run_all_plots.sh'''
 
 ## Use code for modeling light propagation in cortical tissue
 
