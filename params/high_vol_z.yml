@@ -15,9 +15,9 @@ opt_radius: 100  # fiber radius in um
 #                     volume to avoid artifacts from disk convolution.
 #                     Check docstring of disk_conv_nproll in utils.py for
 #                     more information.
-'xymax':  700 
+'xymax':  400 
 'dxy':   5 
-'zmax':   700 
+'zmax':   1000 
 'dz':    5 
 
 # Calculation of scattered pencil beam
@@ -34,7 +34,7 @@ taumax: 10000 # fs
 n_tausmpls: 100 # if exp-smpl True, see definition of exp-sampling for rho above
 taustep: 500 # fs stepsize if exp-smpl False
 
-mu_tau: "table1_vandeHulst" # which equations to use to calculate the first moment 
+mu_tau: "eq4" # which equations to use to calculate the first moment 
                                # of time dispersion, mu. Should be one of
                                # 'eq4'               > McLean eq. 4
                                # 'table1_vandeHulst' 

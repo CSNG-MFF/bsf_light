@@ -15,9 +15,9 @@ opt_radius: 100  # fiber radius in um
 #                     volume to avoid artifacts from disk convolution.
 #                     Check docstring of disk_conv_nproll in utils.py for
 #                     more information.
-'xymax':  700 
+'xymax':  400 
 'dxy':   5 
-'zmax':   700 
+'zmax':   500 
 'dz':    5 
 
 # Calculation of scattered pencil beam
@@ -47,5 +47,5 @@ nstepstheta: 24  # ang conv steps
 nstepsphi  : 24
 
 # disk convolution
-dxy_direct_disk   : 5
-dxy_scattered_disk: 5
+dxy_direct_disk   : 3
+dxy_scattered_disk: 10

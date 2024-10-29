@@ -26,7 +26,7 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 * 'utils.py', 'load_original.py', 'load_save_utils.py' contain utilitly functions
 
-* To run simulation with custom parameters, adapt parametrization in params/default.yml and save as under new file, e.g., params/custom.yml and run: '''python run.py params/custom.yml results/custom.pickle'''
+* To run simulation with custom parameters, adapt parametrization in params/default.yml and save as new file, e.g., params/custom.yml and run: '''python run.py params/custom.yml results/custom.pickle'''
 
 
 ## References
