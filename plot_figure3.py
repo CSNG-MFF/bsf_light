@@ -16,27 +16,27 @@ orig_matlab = load_matlab_model_data()
 
 fs = 8
 A4_w, A4_h = 8.27, 11.69 # inch
-fig, axs = plt.subplots(ncols=3, nrows=2, figsize=(A4_w*0.8, A4_h*0.32))
+fig, axs = plt.subplots(ncols=3, nrows=2, figsize=(A4_w*0.7, A4_h*0.32))
 axs = axs.flatten()
    
 # tranmission over depth
 axs[0].plot(
-    orig_matlab['zz'][0, :],
-    orig_matlab['data'][0, :],
+    orig_matlab['zz'][1, :],
+    orig_matlab['data'][1, :],
     ls='solid', 
     color='blue', 
     label='Original\n(matlab app)'
 )
 axs[0].plot(
-    replication['z'][0, :],
-    replication['combined'][0, :],
+    replication['z'][1, :],
+    replication['combined'][1, :],
     ls='solid', 
     color='orange', 
     label='Replication'
 )
 axs[0].plot(
-    replication_err['z'][0, :],
-    replication_err['combined'][0, :],
+    replication_err['z'][1, :],
+    replication_err['combined'][1, :],
     ls='dotted', color='red', 
     label='Replication with\nsmall-volume\nconvolutions'
 )
@@ -127,10 +127,10 @@ def plot_2D(x, z, data, ax, **kws):
 
 axs[3].set_title('Original (matlab app)', fontsize=fs)
 plot_2D(orig_matlab['xx'], orig_matlab['zz'], orig_matlab['data'], axs[3])
-axs[4].set_title('Replication', fontsize=fs)
-plot_2D(replication['rho'], replication['z'], replication['combined'], axs[4])
-axs[5].set_title('Replication with\nsmall-volume convolutions', fontsize=fs)
-mapp = plot_2D(replication_err['rho'], replication_err['z'], replication_err['combined'], axs[5])
+axs[4].set_title('Replication with\nsmall-volume convolutions', fontsize=fs)
+mapp = plot_2D(replication_err['rho'], replication_err['z'], replication_err['combined'], axs[4])
+axs[5].set_title('Replication', fontsize=fs)
+plot_2D(replication['rho'], replication['z'], replication['combined'], axs[5])
 
 
 for ax in axs[3:]:
@@ -176,9 +176,9 @@ for ax in axs[3:]:
 
 # insert letters:
 for ax, letter in zip(axs[:3], ['a', 'b', 'c']):
-    ax.text(-0.1, 1.07, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
+    ax.text(-0.3, 1.07, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 for ax, letter in zip(axs[3:],['d', 'e', 'f']):
-    ax.text(-0.1, 1.17, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
+    ax.text(-0.3, 1.17, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 plt.tight_layout()
 fig.savefig('figures/figure3.png', dpi=300)
 plt.close()

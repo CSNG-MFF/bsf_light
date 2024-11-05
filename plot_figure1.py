@@ -9,7 +9,7 @@ orig_mod_depth, orig_mod_radial = load_published_model_data()
 
 fs = 8
 A4_w, A4_h = 8.27, 11.69 # inch
-fig, axs = plt.subplots(ncols=3, figsize=(A4_w*0.8, A4_h*0.2))
+fig, axs = plt.subplots(ncols=3, figsize=(A4_w*0.7, A4_h*0.2))
 
    
 # tranmission over depth

@@ -7,89 +7,90 @@ import matplotlib.font_manager as fm
 from utils import mirror_x_axis
 import numpy as np
 
-# n_samples for simulations along radial or depth (z) direction:
-comp_time_nsmps = dict()
-comp_time_nsmps['laptop'] = [400/5, 700/5, 1000/5]
-comp_time_nsmps['cluster'] = [400/5, 700/5, 1000/5, 2000/5, 4000/5]
+# volumes for simulations along radial or depth (z) direction:
+radial_samples = np.array([0.4, 0.7, 1., 2., 4.]) * 0.7 # volume in mm3
+depth_samples = np.array([0.4, 0.7, 1., 2., 4.]) * 0.4 # vol in mm3
+
 # dictionary with computation times:
-comp_time_rad = dict()
-comp_time_rad['laptop'] = list()
-comp_time_rad['cluster'] = list()
-comp_time_z = dict()
-comp_time_z['laptop'] = list()
-comp_time_z['cluster'] = list()
-for name in ['low_vol_radial', 'default', 'high_vol_radial']:
-    comp_time_rad['laptop'].append(
-            load_pickle('results/'+name+'.pickle')['comp_time_s']
-    )
-for name in ['low_vol_z', 'normal_vol_z', 'high_vol_z']:
-    comp_time_z['laptop'].append(
-            load_pickle('results/'+name+'.pickle')['comp_time_s']
-    )
+comp_time_rad = []
+comp_time_z = []
+MaxRS_rad = []
+MaxRS_z = []
 for name in ['low_vol_radial', 'default', 'high_vol_radial', 'very_high_vol_radial', 'very_very_high_vol_radial']:
-    comp_time_rad['cluster'].append(
+    comp_time_rad.append(
             load_pickle('results/'+name+'_cluster.pickle')['comp_time_s']
+    )
+    MaxRS_rad.append(
+            load_pickle('results/'+name+'_cluster.pickle')['MaxRS_KB']
     )
 for name in ['low_vol_z', 'normal_vol_z', 'high_vol_z', 'very_high_vol_z', 'very_very_high_vol_z']:
-    comp_time_z['cluster'].append(
+    comp_time_z.append(
             load_pickle('results/'+name+'_cluster.pickle')['comp_time_s']
+    )
+    MaxRS_z.append(
+            load_pickle('results/'+name+'_cluster.pickle')['MaxRS_KB']
     )
 
 # manually stopped matlab computation time:
 comp_time_matlab = 28 # sec.
 orig_matlab = load_matlab_model_data()
-n_smps_matlab_radial, n_smps_matlab_z = np.shape(orig_matlab['zz'])
+matlab_radial_samples, matlab_depth_samples = np.shape(orig_matlab['zz'])
+matlab_radial_samples = (matlab_radial_samples * 0.005)**2 * 0.7
+matlab_depth_samples = (matlab_depth_samples * 0.005) * 0.4**2
+
 
 fs = 8
 A4_w, A4_h = 8.27, 11.69 # inch
-fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(A4_w*0.8, A4_h*0.2))
+fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(A4_w*0.7, A4_h*0.22))
 axs = axs.flatten()
 
-for handle, ls in zip(['laptop','cluster'], ['solid', 'dotted']):
-    axs[0].plot(
-        comp_time_nsmps[handle],
-        comp_time_rad[handle],
-        ls=ls,
-        marker='.',
-        label=handle
-    )
-    axs[1].plot(
-        comp_time_nsmps[handle],
-        comp_time_z[handle],
-        ls=ls,
-        marker='.',
-        label=handle
-    )
 axs[0].plot(
-        [n_smps_matlab_radial],
+    radial_samples,
+    comp_time_rad,
+    ls='solid',
+    marker='.',
+    label='radial'
+)
+axs[0].plot(
+    depth_samples,
+    comp_time_z,
+    ls='dashed',
+    marker='.',
+    label='depth'
+)
+axs[1].plot(
+    radial_samples,
+    np.array(MaxRS_rad)/1024**2,
+    ls='solid',
+    marker='.',
+    label='radial'
+)
+axs[1].plot(
+    depth_samples,
+    np.array(MaxRS_z)/1024**2,
+    ls='dashed',
+    marker='.',
+    label='depth'
+)
+axs[0].plot(
+        [matlab_radial_samples],
         [comp_time_matlab],
         marker='x',
         ls=None,
         color='tab:red'
 )
 axs[0].annotate(
-        'Original model', xy=(n_smps_matlab_radial, comp_time_matlab), 
-        xytext=(n_smps_matlab_radial + 10, comp_time_matlab + 1),
+        'Original model', xy=(matlab_radial_samples, comp_time_matlab), 
+        xytext=(matlab_radial_samples + 10, comp_time_matlab + 1),
         color='black',
         fontsize=fs
 ) 
-axs[1].plot(
-        [n_smps_matlab_z],
-        [comp_time_matlab],
-        marker='x',
-        ls=None,
-        color='tab:red'
-)
-axs[1].annotate(
-        'Original model', xy=(n_smps_matlab_z, comp_time_matlab), 
-        xytext=(n_smps_matlab_z + 10, comp_time_matlab + 1),
-        color='black',
-        fontsize=fs
-) 
-axs[1].legend(fontsize=fs, loc='upper right', borderaxespad=0., frameon=False)
+axs[0].text(0.7, 0.3, r'$\Delta=5\mu$m', transform=axs[0].transAxes, fontsize=fs)
+axs[1].legend(fontsize=fs, loc='lower right', borderaxespad=0., frameon=False)
 axs[0].set_ylabel('Computing time [s]', fontsize=fs)
-axs[0].set_xlabel('# radial samples', fontsize=fs)
-axs[1].set_xlabel('# depth samples', fontsize=fs)
+axs[1].set_ylabel('Physical memory consumption [GB]', fontsize=fs)
+for ax in axs:
+    ax.set_xlabel(r'Simulated $\rho$-z-plane [mm²]', fontsize=fs)
 
 for ax in axs:
     ax.spines['right'].set_visible(False)
@@ -98,6 +99,6 @@ for ax in axs:
 # insert letters:
 for ax, letter in zip(axs[:], ['a', 'b']):
     ax.text(-0.1, 1.07, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
-plt.tight_layout()
+plt.subplots_adjust(bottom=0.2)  # Increase bottom margin if needed
 fig.savefig('figures/figure4.png', dpi=300)
 plt.close()

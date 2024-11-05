@@ -1,10 +1,10 @@
 from load_save_utils import load_pickle, load_yaml
-from load_original import load_published_exp_data
+from load_original import load_published_exp_data, load_published_model_data
 import matplotlib.pyplot as plt
 
 labels = ['Approximation by\nLutomirski et al.', 
-          'Approximation by\nvan de Hulst & Kattawar', 
-          'Prec. calc. of µ and\napprox. relation of σ to µ']
+          'Approximation by\nvan de Hulst and\nKattawar', 
+          'Prec. calc. of µ\nand approximate\nrelation of σ to µ']
 linestyles = ['dotted', 'dashed', 'solid']
 colors = ['tab:orange','tab:blue', 'tab:green']
 replication_paramss = [
@@ -16,20 +16,23 @@ replications = [
 ]
 
 orig_exp_depth, orig_exp_radial = load_published_exp_data()
+orig_mod_depth, orig_mod_radial = load_published_model_data()
 
 fs = 8
 A4_w, A4_h = 8.27, 11.69 # inch
-fig, axs = plt.subplots(ncols=3, figsize=(A4_w*0.8, A4_h*0.2))
+fig, axs = plt.subplots(ncols=2, nrows=2, figsize=(A4_w*0.7, A4_h*0.4))
+axs = axs.flatten()
+axs[1].axis('off')
+axs = [axs[0], axs[2], axs[3]]
 #axs[3].axis('off')
 # model
 # tranmission over depth
 for replication, replication_params, label, ls, color in zip(replications, replication_paramss, labels, linestyles, colors):
     axs[0].plot(
-        replication['z'][0, :],
-        replication['combined'][0, :],
+        replication['z'][1, :],
+        replication['combined'][1, :],
         ls=ls, 
         color=color, 
-        label=label
     )
     # transmission over radial distance
     z300 = int(300/replication_params['dz'])
@@ -37,7 +40,6 @@ for replication, replication_params, label, ls, color in zip(replications, repli
         replication['rho'][:, z300], 
         replication['combined'][:, z300]/replication['combined'][0, z300],
         ls=ls, color=color, 
-        label=label
     )
     z600 = int(600/replication_params['dz'])
     axs[2].plot(
@@ -53,7 +55,6 @@ axs[0].errorbar(
     orig_exp_depth['z'],
     orig_exp_depth['transmission'],
     yerr=orig_exp_depth['transmission_err'],
-    label='Experiment', 
     marker='x',
     color='black', 
     linestyle='',
@@ -64,13 +65,23 @@ axs[1].plot(
     orig_exp_radial['x_z300'],
     orig_exp_radial['transmission_z300'],
     marker='x',c='black', linestyle='',
-    label='Experiment', 
+)
+axs[1].plot(
+    orig_mod_radial['x_z300'],
+    orig_mod_radial['transmission_z300'],
+    ls='solid', color='black', 
 )
 axs[2].plot(
     orig_exp_radial['x_z600'],
     orig_exp_radial['transmission_z600'],
     marker='x',c='black', linestyle='',
     label='Experiment', 
+)
+axs[2].plot(
+    orig_mod_radial['x_z600'],
+    orig_mod_radial['transmission_z600'],
+    ls='solid', color='black',
+    label='Original model'
 )
 
 # ax properties
@@ -93,12 +104,12 @@ for ax in axs[1:]:
 
 for ax in axs:
     ax.tick_params(axis='both', which='major', labelsize=fs)
-axs[-1].legend(fontsize=fs, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0., frameon=False)
+fig.legend(loc="upper right", bbox_to_anchor=(0.9, .95), frameon=False, fontsize=fs)
 
 
 # insert letters:
 for ax, letter in zip(axs, ['a','b', 'c']):
-    ax.text(-0.1, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
+    ax.text(-0.2, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 plt.tight_layout()
 fig.savefig('figures/figure2.png', dpi=300)
 plt.close()
