@@ -153,11 +153,12 @@ def calc_I_fiber(params):
     
     if params['rho_exp_smpl']:
         # use exp.-sampling with 0 at beginning for rho
-        rhos = np.insert(log_smplng(
+        rhos = log_smplng(
             min_=params['rhoexpmin'], 
-            max_=rho_max_pen, 
-            n_smpls=params['n_rhosmpls']-1
-        ), 0, 0)
+            max_=rho_max_pen+params['rhoexpmin'], 
+            n_smpls=params['n_rhosmpls']
+        )
+        rhos -= params['rhoexpmin']
     else:
         # use uniform sampling
         rhos = np.arange(
