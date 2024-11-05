@@ -43,7 +43,7 @@ def first_moment_of_time_dispersion_mu_tau(
         v = 1 - g # g = mean(cos(theta))
         bzv = mu_s * z * v # bz represents number of scattering lengths 
         mu = (z/c) * (1 - (1 - np.exp(-bzv)) / bzv)
-        # assume approximations by Lutomirski etc. in table1 for mu and sigma,
+        # use approximations by Lutomirski etc. in table1 to relate mu and sigma,
         # further assume mean(Theta**4) irrelevant
         mu2_by_sigma2 = (1/4)**2 / (1/24)
     
@@ -51,7 +51,7 @@ def first_moment_of_time_dispersion_mu_tau(
         # mu_tau in table 1 in McLean et al., Dolin, Ishimaru, Lutomirski et al.
         mean_Theta2 = 2 * (1 - g) # comment below table1
         mu = (z/c) * (1/4) * mu_s * z * mean_Theta2
-        # assume approximations by Lutomirski etc. in table1 for mu and sigma,
+        # use approximations by Lutomirski etc. in table1 to relate mu and sigma,
         # further assume mean(Theta**4) irrelevant
         mu2_by_sigma2 = (1/4)**2 / (1/24)
     
