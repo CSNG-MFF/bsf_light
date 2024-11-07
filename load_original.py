@@ -50,7 +50,11 @@ def load_published_model_data():
 
     Spatial units all [um], light transmission decimals.
     """
+    depth_curve = pd.read_csv('data_from_paper/depth_profile.csv')
     depth = dict()
+    depth['z'] = depth_curve['x'].values * 1e3
+    depth['transmission'] = depth_curve['transmission'].values * 1e-2
+
     
     ## import model prediction from Fig 5b
     radial_curve_z300 = np.load('data_from_paper/BSF_model_radial_curve_300.npy')

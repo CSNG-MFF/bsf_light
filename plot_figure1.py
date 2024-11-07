@@ -33,6 +33,7 @@ for replication, replication_params, label, ls, color in zip(replications, repli
         replication['combined'][1, :],
         ls=ls, 
         color=color, 
+        zorder=2
     )
     # transmission over radial distance
     z300 = int(300/replication_params['dz'])
@@ -59,6 +60,12 @@ axs[0].errorbar(
     color='black', 
     linestyle='',
     capsize=5
+)
+axs[0].plot(
+    orig_mod_depth['z'],
+    orig_mod_depth['transmission'],
+    ls='solid', color='black', 
+    zorder=0
 )
 # transmission over radial distance
 axs[1].plot(
