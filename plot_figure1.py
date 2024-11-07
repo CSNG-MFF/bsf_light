@@ -112,5 +112,5 @@ fig.legend(loc="upper right", bbox_to_anchor=(0.9, .95), frameon=False, fontsize
 for ax, letter in zip(axs, ['a','b', 'c']):
     ax.text(-0.2, 1.05, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 plt.tight_layout()
-fig.savefig('figures/figure2.png', dpi=300)
+fig.savefig('figures/figure1.png', dpi=300)
 plt.close()

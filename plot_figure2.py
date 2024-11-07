@@ -181,5 +181,5 @@ for ax, letter in zip(axs[:3], ['a', 'b', 'c']):
 for ax, letter in zip(axs[3:],['d', 'e', 'f']):
     ax.text(-0.3, 1.17, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 plt.tight_layout()
-fig.savefig('figures/figure3.png', dpi=300)
+fig.savefig('figures/figure2.png', dpi=300)
 plt.close()

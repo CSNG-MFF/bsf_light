@@ -100,5 +100,5 @@ for ax in axs:
 for ax, letter in zip(axs[:], ['a', 'b']):
     ax.text(-0.1, 1.07, letter, fontsize=10, fontweight='bold', color='black', transform=ax.transAxes)
 plt.subplots_adjust(bottom=0.2)  # Increase bottom margin if needed
-fig.savefig('figures/figure4.png', dpi=300)
+fig.savefig('figures/figure3.png', dpi=300)
 plt.close()
