@@ -21,6 +21,12 @@ axs = axs.flatten()
    
 # tranmission over depth
 axs[0].plot(
+    orig_mod_depth['z'],
+    orig_mod_depth['transmission'],
+    ls='--', color='blue', 
+    label='Original\n(publication)'
+)
+axs[0].plot(
     orig_matlab['zz'][1, :],
     orig_matlab['data'][1, :],
     ls='solid', 
