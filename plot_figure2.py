@@ -143,13 +143,13 @@ plot_2D(replication['rho'], replication['z'], replication['combined'], axs[5])
 for ax in axs[3:]:
     # Position for arrow 1
     x,y = (-330, 680)
-    ax.annotate('1', xy=(x,y), xytext=(x + 100, y - 100),
+    ax.annotate(' ', xy=(x,y), xytext=(x + 100, y - 100),
                 arrowprops=dict(arrowstyle="->", lw=1, color="black"),
                 fontsize=fs, color="black")
     
     # Position for arrow 2
     x,y = (-330, 180) 
-    ax.annotate('2', xy=(x,y), xytext=(x + 100, y + 100),
+    ax.annotate(' ', xy=(x,y), xytext=(x + 100, y + 100),
                 arrowprops=dict(arrowstyle="->", lw=1, color="black"),
                 fontsize=fs, color="black")
 
