@@ -2,19 +2,27 @@ import numpy as np
 
 def I_direct_cone(z, rho, params):
     """ 
-    Intensity of direct light cone exiting infinitesimal point.
-    
-    Calculated analytically as angular convolution of the expression
-    for direct light pencil beam component.
-    
-    params:
+    Compute the intensity of a direct light cone emitted from an infinitesimal point.
+
+    This function calculates the intensity of direct light emitted from an infinitesimal
+    point source by performing an analytical angular convolution over the direct light
+    component.
+
+    Parameters
+    ----------
+    rho : np.ndarray
+        Radial coordinate, representing the distance from the center along the
+        xy-plane.
+    z : np.ndarray
+        z-coordinate, representing the height along the z-axis.
+    params : dict
+        Parameters used in the calculation, refer to the `calc_I_fiber` function in the
+        `fiber.py` module.
+
+    Returns
     -------
-    rho: np.ndarray
-        radial coordinate
-    z: np.ndarray
-        z-coordinate
-    params: dict
-        For values, see I_fiber.
+    intensity : np.ndarray
+        Computed intensity values for given `rho` and `z`.
     """
     assert np.all(rho >=0) and np.all(z >= 0), 'rho or z is negative.'
     on = np.arctan(rho/z) <= params['theta_div']
