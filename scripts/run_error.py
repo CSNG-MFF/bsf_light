@@ -1,6 +1,6 @@
 import sys
-from BSF import calc_I_fiber_reproduce_error
-from load_save_utils import load_yaml, save_pickle
+from BSF.BSF import calc_I_fiber_reproduce_error
+from BSF import load_yaml, save_pickle
 from time import time
 start = time()
 results = calc_I_fiber_reproduce_error(

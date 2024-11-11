@@ -1,10 +1,10 @@
-from load_save_utils import load_pickle, load_yaml
-from load_original import load_matlab_model_data, load_published_model_data
+from BSF import load_pickle, load_yaml
+from BSF.load_original import load_matlab_model_data, load_published_model_data
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 import matplotlib.font_manager as fm
-from utils import mirror_x_axis
+from BSF.utils import mirror_x_axis
 import numpy as np
 
 # volumes for simulations along radial or depth (z) direction:
@@ -18,17 +18,17 @@ MaxRS_rad = []
 MaxRS_z = []
 for name in ['low_vol_radial', 'default', 'high_vol_radial', 'very_high_vol_radial', 'very_very_high_vol_radial']:
     comp_time_rad.append(
-            load_pickle('results/'+name+'_cluster.pickle')['comp_time_s']
+            load_pickle('results/'+name+'.pickle')['comp_time_s']
     )
     MaxRS_rad.append(
-            load_pickle('results/'+name+'_cluster.pickle')['MaxRS_KB']
+            load_pickle('results/'+name+'.pickle')['MaxRS_KB']
     )
 for name in ['low_vol_z', 'normal_vol_z', 'high_vol_z', 'very_high_vol_z', 'very_very_high_vol_z']:
     comp_time_z.append(
-            load_pickle('results/'+name+'_cluster.pickle')['comp_time_s']
+            load_pickle('results/'+name+'.pickle')['comp_time_s']
     )
     MaxRS_z.append(
-            load_pickle('results/'+name+'_cluster.pickle')['MaxRS_KB']
+            load_pickle('results/'+name+'.pickle')['MaxRS_KB']
     )
 
 # manually stopped matlab computation time:

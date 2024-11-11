@@ -1,5 +1,5 @@
-from load_save_utils import load_pickle, load_yaml
-from load_original import load_published_exp_data, load_published_model_data
+from BSF import load_pickle, load_yaml
+from BSF.load_original import load_published_exp_data, load_published_model_data
 import matplotlib.pyplot as plt
 
 labels = ['Approximation by\nLutomirski et al.', 
