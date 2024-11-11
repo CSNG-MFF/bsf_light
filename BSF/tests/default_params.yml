@@ -1,0 +1,51 @@
+# natural constants 
+c0: 0.299792458  #(* um/fs *),
+
+# tissue properties
+ntissue: 1.36  # refractive index of cortical tissue
+mu_a: 0.00006  # um**-1
+mu_s: 0.0211  # um**-1
+g: 0.86  # anisotropy
+
+# optical fiber
+NA: 0.37  # num aperture
+opt_radius: 100  # fiber radius in um
+
+# final volume, NOTE: choose xymax to be 100um larger than your desired 
+#                     volume to avoid artifacts from disk convolution.
+#                     Check docstring of disk_conv_nproll in utils.py for
+#                     more information.
+'xymax':  700 
+'dxy':   5 
+'zmax':   700 
+'dz':    5 
+
+# Calculation of scattered pencil beam
+## exp.-sampling of rho
+rho_exp_smpl : True 
+rhoexpmin: 1  # exp(linspace(log(rhomin), log(rhomax), n_rhosmpls)) if exp-smpl True
+n_rhosmpls : 20  # (line above)
+rhostep: 2 # stepsize if exp-smpl False
+
+## multipath-time integral
+tau_exp_smpl: True
+taumin: 5  # fs 
+taumax: 10000 # fs
+n_tausmpls: 100 # if exp-smpl True, see definition of exp-sampling for rho above
+taustep: 500 # fs stepsize if exp-smpl False
+
+mu_tau: "eq4" # which equations to use to calculate the first moment 
+                               # of time dispersion, mu. Should be one of
+                               # 'eq4'               > McLean eq. 4
+                               # 'table1_vandeHulst' 
+                               #             -> McLean table1 van de Hulst & Kattawar
+                               # 'table1_Lutomirski' 
+                               #  -> McLean table1 Dolin, Ishimaru, Lutomirski et al.
+
+# angular convolution of scattered pencil beam
+nstepstheta: 24  # ang conv steps
+nstepsphi  : 24
+
+# disk convolution
+dxy_direct_disk   : 3
+dxy_scattered_disk: 10

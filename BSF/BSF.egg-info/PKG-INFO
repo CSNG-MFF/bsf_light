@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: BSF
+Version: 0.1
+Summary: Fast light simulation using a beam-spread-function approach
+Author: David Berling
+Author-email: berling@ksvi.mff.cuni.cz
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: pyyaml
+Requires-Dist: matplotlib
