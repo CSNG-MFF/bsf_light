@@ -91,6 +91,18 @@ axs[2].plot(
     label='Original model'
 )
 
+# Position for arrow 1
+x,y = (250, 0.7)
+axs[2].annotate('1', xy=(x,y), xytext=(x + 50, y + 0.13),
+            arrowprops=dict(arrowstyle="->", lw=1, color="black"),
+            fontsize=fs, color="black")
+
+# Position for arrow 2
+x,y = (430, 0.33) 
+axs[2].annotate('2', xy=(x,y), xytext=(x + 50, y + 0.13),
+            arrowprops=dict(arrowstyle="->", lw=1, color="black"),
+            fontsize=fs, color="black")
+
 # ax properties
 axs[0].set_xlim(0,700)
 axs[0].set_ylim(0,0.33)
