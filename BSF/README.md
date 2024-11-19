@@ -14,7 +14,7 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Pip installation:
 
-```pip install PATH_TO_BSF```
+```pip install bsf_light```
 
 ## Use code for modeling light propagation in cortical tissue
 
