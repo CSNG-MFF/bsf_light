@@ -57,7 +57,7 @@ def ang_conv(rho, z, func_rho_z, params):
         axis=2
     )
     
-    I_res = ang_conv / 2 * np.pi * (rho*rho + z*z)
+    I_res = ang_conv / (2 * np.pi * (rho*rho + z*z))
     return I_res
 
 def disk_conv(rho, z, func_rho_z, opt_radius: float, dxy: float):
