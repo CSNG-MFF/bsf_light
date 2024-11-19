@@ -1,4 +1,4 @@
-# Beam-spread-function-based light model
+# Beams Simple and Fast (BSF) - light simulation tool using a beam-spread-function approach
 
 Replication and improvement of original model introduced by Yona et al. 2016 [1]. Replication details and model published in [2].
 
@@ -27,3 +27,4 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 [1] G. Yona, N. Meitav, I. Kahn, S. Shoham, Realistic Numerical and Analytical Modeling of Light Scattering in Brain Tissue for Optogenetic Applications. eNeuro 3, ENEURO.0059-15.2015 (2016).
 [2] To be announced.
+
