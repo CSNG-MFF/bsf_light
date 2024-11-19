@@ -14,4 +14,6 @@ BSF.egg-info/SOURCES.txt
 BSF.egg-info/dependency_links.txt
 BSF.egg-info/requires.txt
 BSF.egg-info/top_level.txt
+examples/default.yml
+examples/run.py
 tests/test_simulation.py

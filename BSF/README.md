@@ -18,11 +18,10 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Use code for modeling light propagation in cortical tissue
 
-* To run simulation with custom parameters, adapt parametrization in params/default.yml and save as new file, e.g., params/custom.yml and run: '''python scripts/run.py params/custom.yml results/custom.pickle'''
+1. Define simulation parameters, example can be found under ´´´examples/default.yml´´´ and under https://github.com/CSNG-MFF/BSF_light_model in ´´´params/default.yml´´´
 
-* 'BSF.py' contains main model implementation. 
-
-* 'utils.py', 'load_save_utils.py' contain utilitly functions
+2. Use commandline to run simulation using the run-script provided in ´´´examples/run.py´´´ and under https://github.com/CSNG-MFF/BSF_light_model in ´´´scripts/run.py´´´, providing the parameter-file defined in step 1. and the location where simulation output shall be written to:
+	´´´python run.py PARAMETER_FILE OUTPUT_LOCATION´´´
 
 ## References
 
