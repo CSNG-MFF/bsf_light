@@ -2,10 +2,11 @@
 
 Replication and improvement of original model introduced by Yona et al. 2016 [1]. Replication details and model published in [2].
 
-
 ## installation using pip, python 3.x:
 
-´´´pip install ./BSF´´´
+* ´´´pip install ./BSF´´´
+
+* install additional dependency: ´´´pip install pandas´´´
 
 ## Run simulations and reproduce figures:
 
@@ -15,7 +16,9 @@ Replication and improvement of original model introduced by Yona et al. 2016 [1]
 
 * ´BSF/BSF.py´ contains main model implementation. 
 
-* ´BSF/utils.py´, ´BSF/load_original.py´, ´BSF/load_save_utils.py´ contain utilitly functions
+* ´BSF/utils.py´, ´BSF/load_save_utils.py´ contain utilitly functions
+
+* ´scripts/load_original.py´ contains functions to load data from Yona et al. [1]
 
 * To run simulation with custom parameters, adapt parametrization in ´params/default.yml´ and save as new file, e.g., ´params/custom.yml´ and run: 
 ´´´python scripts/run.py params/custom.yml results/custom.pickle´´´

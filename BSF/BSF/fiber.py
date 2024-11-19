@@ -82,7 +82,7 @@ def calc_I_fiber(params):
     disk_scattered = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=interp_cone_scattered.calc, 
+        func_rho_z=interp_cone_scattered.calc, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_scattered_disk']
     )
@@ -92,7 +92,7 @@ def calc_I_fiber(params):
     disk_direct = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=I_direct_cone_fixed_params, 
+        func_rho_z=I_direct_cone_fixed_params, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_direct_disk']
     )
@@ -203,7 +203,7 @@ def calc_I_fiber_reproduce_error(
     disk_scattered = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=interp_cone_scattered.calc, 
+        func_rho_z=interp_cone_scattered.calc, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_scattered_disk']
     )
@@ -215,7 +215,7 @@ def calc_I_fiber_reproduce_error(
     disk_direct = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=I_direct_cone_fixed_params, 
+        func_rho_z=I_direct_cone_fixed_params, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_direct_disk']
     )

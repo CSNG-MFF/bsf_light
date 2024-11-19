@@ -6,7 +6,6 @@ BSF/__init__.py
 BSF/convolutions.py
 BSF/direct.py
 BSF/fiber.py
-BSF/load_original.py
 BSF/load_save_utils.py
 BSF/scattered.py
 BSF/utils.py

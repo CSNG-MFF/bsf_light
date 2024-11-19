@@ -1,5 +1,5 @@
 from BSF import load_pickle, load_yaml
-from BSF.load_original import load_matlab_model_data, load_published_model_data
+from load_original import load_matlab_model_data, load_published_model_data
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar

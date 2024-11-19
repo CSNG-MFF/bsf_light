@@ -1,5 +1,5 @@
 import sys
-from BSF.BSF import calc_I_fiber_reproduce_error
+from BSF.fiber import calc_I_fiber_reproduce_error
 from BSF import load_yaml, save_pickle
 from time import time
 start = time()
