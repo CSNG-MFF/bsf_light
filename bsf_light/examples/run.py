@@ -1,6 +1,6 @@
 import resource
 import sys
-from BSF import calc_I_fiber, load_yaml, save_pickle
+from bsf_light import calc_I_fiber, load_yaml, save_pickle
 from time import time
 start = time()
 results = calc_I_fiber(load_yaml(str(sys.argv[1])))

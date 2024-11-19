@@ -1,6 +1,6 @@
-## Beam-spread-function-based light model
+## Beams Simple and Fast - beam-spread-function-based light model
 
-Replication and improvement of original model introduced by Yona et al. 2016 [1]. Replication details and model published in [2].
+Open-sourced replication and improvement of original model introduced by Yona et al. 2016 [1]. Replication details and model published in [2].
 
 ## installation using pip, python 3.x:
 

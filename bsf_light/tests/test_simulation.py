@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from BSF import calc_I_fiber, load_yaml, load_pickle
+from bsf_light import calc_I_fiber, load_yaml, load_pickle
 
 def test_simulation_default_params():
     # Run the simulation with default parameters

@@ -1,4 +1,4 @@
-from BSF import load_pickle, load_yaml
+from bsf_light import load_pickle, load_yaml
 from load_original import load_published_exp_data, load_published_model_data
 import matplotlib.pyplot as plt
 

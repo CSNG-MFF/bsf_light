@@ -1,5 +1,5 @@
 include README.md
 include LICENSE
 include examples/*
-recursive-include BSF *.py
+recursive-include bsf_light *.py
 recursive-include tests *.py

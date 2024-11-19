@@ -1,10 +1,10 @@
-from BSF import load_pickle, load_yaml
+from bsf_light import load_pickle, load_yaml
 from load_original import load_matlab_model_data, load_published_model_data
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 import matplotlib.font_manager as fm
-from BSF.utils import mirror_x_axis
+from bsf_light.utils import mirror_x_axis
 
 replication_params = load_yaml('params/default.yml')
 replication = load_pickle('results/default.pickle')['final']

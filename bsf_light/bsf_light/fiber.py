@@ -1,144 +1,8 @@
-from scipy.special import gamma
 import numpy as np
-from BSF.utils import rotate_cyl_coords_2angles_return_rho_z
-from BSF.utils import log_smplng, calc_pencil_rho_z_max
-from BSF.utils import Interpolator, calc_dependent_params, disk_conv_numpy
-
-def I_direct_cone(z, rho, params):
-    """ 
-    Intensity of direct light cone exiting infinitesimal point.
-    
-    Calculated analytically as angular convolution of the expression
-    for direct light pencil beam component.
-    
-    params:
-    -------
-    rho: np.ndarray
-        radial coordinate
-    z: np.ndarray
-        z-coordinate
-    params: dict
-        For values, see I_fiber.
-    """
-    assert np.all(rho >=0) and np.all(z >= 0), 'rho or z is negative.'
-    on = np.arctan(rho/z) <= params['theta_div']
-    R_spherical = np.sqrt(rho*rho+z*z)
-    norm = (1 - np.cos(params['theta_div'])) * 2 * np.pi * R_spherical*R_spherical
-    return np.exp(-(params['mu_a']+params['mu_s'])*R_spherical) * on / norm
-
-def h(z, rho, tau, c):
-    """
-    spatial-angular distribution of scattered photons.
-    Diverges if rho=0 for tau->0.
-    """
-    _3by4taucz = 3 / (4 * tau * c * z)
-    return _3by4taucz / np.pi * np.exp(- _3by4taucz * rho*rho)
-
-def first_moment_of_time_dispersion_mu_tau(
-    z, g, mu_s, c,
-    version: str
-):
-    if version == 'eq4':
-        # use eq. 4 in McLean et al. to calculate mu precisely
-        v = 1 - g # g = mean(cos(theta))
-        bzv = mu_s * z * v # bz represents number of scattering lengths 
-        mu = (z/c) * (1 - (1 - np.exp(-bzv)) / bzv)
-        # use approximations by Lutomirski etc. in table1 to relate mu and sigma,
-        # further assume mean(Theta**4) irrelevant
-        mu2_by_sigma2 = (1/4)**2 / (1/24)
-    
-    elif version == 'table1_Lutomirski':
-        # mu_tau in table 1 in McLean et al., Dolin, Ishimaru, Lutomirski et al.
-        mean_Theta2 = 2 * (1 - g) # comment below table1
-        mu = (z/c) * (1/4) * mu_s * z * mean_Theta2
-        # use approximations by Lutomirski etc. in table1 to relate mu and sigma,
-        # further assume mean(Theta**4) irrelevant
-        mu2_by_sigma2 = (1/4)**2 / (1/24)
-    
-    elif version == 'table1_vandeHulst':
-        # mu_tau in table 1 in McLean et al., van de Hulst and Kattawar
-        mean_Theta2 = 2 * (1 - g) # comment below table1
-        mu = (z/c) * (1/12) * mu_s * z * mean_Theta2
-        mu2_by_sigma2 = (1/12)**2 / (7/720)
-    
-    else:
-        raise ValueError("version must be one out of ['eq4', 'table1_vandeHulst', 'table1_Lutomirski']")
-    
-    return mu, mu2_by_sigma2
-    
-
-def G(z, tau, g, mu_s, c, first_moment: str):
-    """
-    Time dispersion distribution.
-    Diverges for tau -> 0 and not defined for z=0.
-    
-    Moments can be calculated via 4 ways, which change the way the
-    first moment (mu_tau) is calculated:
-    'eq4', 'table1_vandeHulst', or 'table1_Lutomirski'
-    """
-    # moments of time dispersion
-    mu, mu2_by_sigma2 = first_moment_of_time_dispersion_mu_tau(z, g, mu_s, c, version=first_moment)
-    mu_by_sigma2 = mu2_by_sigma2 / mu
-    mu_tau_by_sigma2 = mu_by_sigma2 * tau
-    # G in three factors
-    G1 = mu_by_sigma2/gamma(mu2_by_sigma2)
-    G2 = mu_tau_by_sigma2**(mu2_by_sigma2 - 1)
-    G3 = np.exp(-mu_tau_by_sigma2)
-    return G1 * G2 * G3
-
-def pencil_scattered(z, rho, tau, g, mu_s, mu_a, c, G_version: str):
-    scattered = 1 - np.exp(-mu_s * z)
-    not_absorbed = np.exp(-mu_a * (z + c * tau))
-    return scattered*not_absorbed*G(z, tau, g, mu_s, c, G_version)*h(z, rho, tau, c)
-
-def pencil_scattered_time_integrated(z, rho, tau, g, mu_s, mu_a, c, G_version: str):
-    """
-    Assume tau on axis/dim 2 in arrays.
-    """
-    integral = np.sum(
-        pencil_scattered(
-            z[:,:,:-1], rho[:,:,:-1], tau[:,:,:-1], g, mu_s, mu_a, c, G_version
-        ) * np.diff(tau, axis=2),
-        axis=2
-    )
-    return integral
-
-def ang_conv(rho, z, func_rho_z, params):
-    """
-    Numerical angular convolution to obtain scattered light of
-    light cone exiting infinitesimal point in emitter surface.
-
-    Numerical convolution over angles theta
-    and phi of function depending on rho and z.
-    """
-    # uniform sampling
-    thetas = np.linspace(0, params['theta_div'], params['nstepstheta'])
-    dtheta = np.diff(thetas)[0]
-    phis = np.arange(0, 2*np.pi, 2*np.pi/params['nstepsphi'])
-    dphi = np.diff(phis)[0]
-    thetas, phis = np.meshgrid(thetas, phis, indexing='ij')
-    thetas = thetas.flatten()[np.newaxis,np.newaxis,:]
-    phis = phis.flatten()[np.newaxis,np.newaxis,:]
-
-    rho_ = rho[:,:,np.newaxis]
-    z_ = z[:,:,np.newaxis]
-
-    # rotate the coordinates, rescale their value such that after 
-    # rounding it corresponds to some index in intensity_prof
-    rho_r, z_r = rotate_cyl_coords_2angles_return_rho_z(
-        rho=rho_, phi=0, z=z_, 
-        alpha=phis, 
-        beta=thetas
-    )
-    # get intensity from interpolation of pencil beam:
-    ang_conv = np.sum(
-        func_rho_z(np.abs(rho_r), z_r)\
-        * np.sin(thetas) * dtheta * dphi * (rho_*rho_ + z_*z_),
-        axis=2
-    )
-    
-    norm = 2 * np.pi * (rho*rho + z*z)
-    return ang_conv/norm
+from bsf_light.utils import log_smplng, calc_pencil_rho_z_max, Interpolator, calc_dependent_params
+from bsf_light.convolutions import ang_conv, disk_conv
+from bsf_light.direct import I_direct_cone
+from bsf_light.scattered import pencil_scattered_time_integrated
 
 def calc_I_fiber(params):
 
@@ -215,20 +79,20 @@ def calc_I_fiber(params):
     # create Interpolator for cone_scattered
     interp_cone_scattered = Interpolator(rho2_cone, z2_cone, cone_scattered)
     # disk
-    disk_scattered = disk_conv_numpy(
+    disk_scattered = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=interp_cone_scattered.calc, 
+        func_rho_z=interp_cone_scattered.calc, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_scattered_disk']
     )
     # Calculate direct light
     def I_direct_cone_fixed_params(rho, z):
         return I_direct_cone(z, rho, params)
-    disk_direct = disk_conv_numpy(
+    disk_direct = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=I_direct_cone_fixed_params, 
+        func_rho_z=I_direct_cone_fixed_params, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_direct_disk']
     )
@@ -336,10 +200,10 @@ def calc_I_fiber_reproduce_error(
     else:
         interp_cone_scattered = Interpolator(rho2_cone, z2_cone, cone_scattered)
     # disk
-    disk_scattered = disk_conv_numpy(
+    disk_scattered = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=interp_cone_scattered.calc, 
+        func_rho_z=interp_cone_scattered.calc, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_scattered_disk']
     )
@@ -348,10 +212,10 @@ def calc_I_fiber_reproduce_error(
     # Calculate direct light
     def I_direct_cone_fixed_params(rho, z):
         return I_direct_cone(z, rho, params)
-    disk_direct = disk_conv_numpy(
+    disk_direct = disk_conv(
         rho=rho2_cone, 
         z=z2_cone, 
-        I_rho_z=I_direct_cone_fixed_params, 
+        func_rho_z=I_direct_cone_fixed_params, 
         opt_radius=params['opt_radius'], 
         dxy=params['dxy_direct_disk']
     )

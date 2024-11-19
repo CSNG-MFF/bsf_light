@@ -1,5 +1,5 @@
 import numpy as np
-from BSF.utils import rotate_cyl_coords_2angles_return_rho_z
+from bsf_light.utils import rotate_cyl_coords_2angles_return_rho_z
 
 def ang_conv(rho, z, func_rho_z, params):
     """
