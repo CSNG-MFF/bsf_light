@@ -4,17 +4,13 @@ Replication and improvement of original model introduced by Yona et al. 2016 [1]
 
 ## software requirements:
 
-* python 3.x
-* numpy
-* matplotlib
-* scipy
-* pyyaml
+* Requires python 3.13, dependencies will be install automatically. See /bsf_light/setup.py file for more details. 
 
 Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Pip installation:
 
-* ```pip install bsf_light```
+* ```pip install bsf-light```
 
 * install additional dependency: ```pip install pandas```
 

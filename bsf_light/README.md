@@ -4,17 +4,13 @@ Replication and improvement of original model introduced by Yona et al. 2016 [1]
 
 ## software requirements:
 
-* python 3.x
-* numpy
-* matplotlib
-* scipy
-* pyyaml
+* Requires python 3.13. Dependencies will be installed automatically. See bsf_light/setup.py for details.
 
 Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Pip installation:
 
-```pip install bsf_light```
+```pip install bsf-light```
 
 ## Use code for modeling light propagation in cortical tissue
 
