@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='bsf_light',
-    version='1.0.0',
+    version='1.0.1',
     description='Beams Simple and Fast LIGHT simulation (bsf_light) - Fast light simulation for brain tissue using a beam-spread-function approach',
     long_description=long_description,
     long_description_content_type="text/markdown",

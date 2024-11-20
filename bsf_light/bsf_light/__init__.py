@@ -1,6 +1,6 @@
 # bsf_light/__init__.py
 
-__version__ = "1.0.3"
+__version__ = "1.0.1"
 
 # Core functions and classes accessible at the package level
 from .fiber import calc_I_fiber
