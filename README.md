@@ -28,4 +28,4 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 [1] G. Yona, N. Meitav, I. Kahn, S. Shoham, Realistic Numerical and Analytical Modeling of Light Scattering in Brain Tissue for Optogenetic Applications. eNeuro 3, ENEURO.0059-15.2015 (2016).
 
-[2] To be announced.
+[2] D. Berling, J. Střeleček, T. Iser, J. Antolík, An open-source replication for fast and accessible light propagation modeling in brain tissue. In revision at PLOS ONE. 2025.
