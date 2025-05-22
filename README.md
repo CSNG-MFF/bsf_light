@@ -1,4 +1,4 @@
-# Beams Simple and Fast LIGHT simulation (bsf_light) - light simulation tool using a beam-spread-function approach
+# Beams Simple and Fast LIGHT simulation (bsf_light) - light simulation tool using a beam-spread-function approach [![DOI](https://zenodo.org/badge/859378712.svg)](https://doi.org/10.5281/zenodo.15490385)
 
 Replication and improvement of original model introduced by Yona et al. 2016 [1]. Replication details and model published in [2].
 
