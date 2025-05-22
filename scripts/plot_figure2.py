@@ -36,7 +36,7 @@ axs[0].plot(
 axs[0].plot(
     replication['z'][1, :],
     replication['combined'][1, :],
-    ls='solid', 
+    ls='dashdot', 
     color='orange', 
     label='Replication'
 )
@@ -71,7 +71,7 @@ z300 = int(300/replication_params['dz'])
 axs[1].plot(
     replication['rho'][:, z300], 
     replication['combined'][:, z300]/replication['combined'][0, z300],
-    ls='solid', color='orange', 
+    ls='dashdot', color='orange', 
     label='Replication'
 )
 z300 = int(300/replication_err_params['dz'])
@@ -99,7 +99,7 @@ z600 = int(600/replication_params['dz'])
 axs[2].plot(
     replication['rho'][:, z600], 
     replication['combined'][:, z600]/replication['combined'][0, z600],
-    ls='solid', color='orange', 
+    ls='dashdot', color='orange', 
     label='Replication'
 )
 z600 = int(600/replication_err_params['dz'])
@@ -130,11 +130,13 @@ def plot_2D(x, z, data, ax, **kws):
     xm = mirror_x_axis(x, make_neg=True)
     zm = mirror_x_axis(z, make_neg=False)
     datam = mirror_x_axis(data, make_neg=False)
-    return ax.pcolormesh(xm,zm,datam, norm=LogNorm(1e-4,1), shading='nearest', cmap='Blues')
+    return ax.pcolormesh(xm,zm,datam, norm=LogNorm(1e-4,1), shading='nearest', cmap='magma_r')
 
 axs[3].set_title('Original (matlab app)', fontsize=fs)
 plot_2D(orig_matlab['xx'], orig_matlab['zz'], orig_matlab['data'], axs[3])
 axs[4].set_title('Replication with\nsmall-volume convolutions', fontsize=fs)
+# set all 0 to 1e-9 to avoid white-space in log-scale color-coding
+replication_err['combined'][replication_err['combined']==0] = 1e-9
 mapp = plot_2D(replication_err['rho'], replication_err['z'], replication_err['combined'], axs[4])
 axs[5].set_title('Replication', fontsize=fs)
 plot_2D(replication['rho'], replication['z'], replication['combined'], axs[5])

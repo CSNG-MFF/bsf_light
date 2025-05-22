@@ -11,10 +11,7 @@ g: 0.86  # anisotropy
 NA: 0.37  # num aperture
 opt_radius: 100  # fiber radius in um
 
-# final volume, NOTE: choose xymax to be 100um larger than your desired 
-#                     volume to avoid artifacts from disk convolution.
-#                     Check docstring of disk_conv_nproll in utils.py for
-#                     more information.
+# final volume
 'xymax':  700 
 'dxy':   5 
 'zmax':   700 

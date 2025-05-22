@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p results
+
 python scripts/run.py 'params/default.yml' 'results/default.pickle'
 
 python scripts/run.py 'params/default_Lutomirski.yml' 'results/default_Lutomirski.pickle'

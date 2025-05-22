@@ -20,12 +20,13 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
 ## Use code for modeling light propagation in cortical tissue
 
-1. Define simulation parameters, example can be found under `examples/default.yml` and under https://github.com/CSNG-MFF/bsf_light in `params/default.yml`
+1. Define simulation parameters, example can be found under `bsf_light/examples/default.yml` and under https://github.com/CSNG-MFF/bsf_light in `params/default.yml`
 
-2. Use commandline to run simulation using the run-script provided in `examples/run.py` and under https://github.com/CSNG-MFF/bsf_light in `scripts/run.py`, providing the parameter-file defined in step 1. and the location where simulation output shall be written to:
+2. Use commandline to run simulation using the run-script provided in `bsf_light/examples/run.py` and under https://github.com/CSNG-MFF/bsf_light in `scripts/run.py`, providing the parameter-file defined in step 1. and the location where simulation output shall be written to:
     ```python run.py PARAMETER_FILE OUTPUT_LOCATION```
 
 ## References
 
 [1] G. Yona, N. Meitav, I. Kahn, S. Shoham, Realistic Numerical and Analytical Modeling of Light Scattering in Brain Tissue for Optogenetic Applications. eNeuro 3, ENEURO.0059-15.2015 (2016).
+
 [2] To be announced.
