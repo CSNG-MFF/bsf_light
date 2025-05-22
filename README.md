@@ -4,7 +4,7 @@ Replication and improvement of original model introduced by Yona et al. 2016 [1]
 
 ## software requirements:
 
-* Requires python 3.13, dependencies will be install automatically. See /bsf_light/setup.py file for more details. 
+* Requires python 3.13, dependencies will be installed automatically. See /bsf_light/setup.py file for more details. 
 
 Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 
@@ -23,7 +23,8 @@ Tested on Ubuntu 20.04 LTS and 22.04.4 LTS.
 1. Define simulation parameters, example can be found under `bsf_light/examples/default.yml` and under https://github.com/CSNG-MFF/bsf_light in `params/default.yml`
 
 2. Use commandline to run simulation using the run-script provided in `bsf_light/examples/run.py` and under https://github.com/CSNG-MFF/bsf_light in `scripts/run.py`, providing the parameter-file defined in step 1. and the location where simulation output shall be written to:
-    ```python run.py PARAMETER_FILE OUTPUT_LOCATION```
+    ```python scripts/run.py PARAMETER_FILE OUTPUT_LOCATION```
+   e.g., ```python scripts/run.py params/defaults.yml result.pickle``` will run the simulation using default parameters and write results to result.pickle.
 
 ## References
 
